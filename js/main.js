@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
         airDensity: 1
     };
 
-    // Update slider values
+    // The code for updating the sliders value
     windSpeedSlider.addEventListener('input', () => {
         windSpeedValue.textContent = windSpeedSlider.value;
         windSpeedDisplay.textContent = `${windSpeedSlider.value} mph`;
@@ -59,7 +59,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const windDirection = windDirectionSlider.value;
         const frontalAreaDensity = frontalAreaDensitySlider.value;
 
-        // Set tree image based on type
+        // Set tree image based on type but no images or svgs for now
         if (treeType === 'oak') {
             tree.src = 'path-to-oak-image.png';
         } else if (treeType === 'pine') {
@@ -68,7 +68,7 @@ document.addEventListener('DOMContentLoaded', () => {
             tree.src = 'path-to-palm-image.png';
         }
 
-        // Calculate momentum absorption
+        // Calculate momentum absorption used gpt for this tho
         const momentumAbsorption = constants.momentumAbsorption[treeType];
         const momentum = windSpeed * constants.airDensity * frontalAreaDensity / 100 * momentumAbsorption;
 
@@ -87,7 +87,7 @@ document.addEventListener('DOMContentLoaded', () => {
             ease: 'power1.inOut'
         });
 
-        // Display popup for protection options if wind speed is high
+        // Display popup for protection options if wind speed is high...
         if (windSpeed >= 75) {
             document.getElementById('protectionOptions').classList.remove('hidden');
         } else {
@@ -101,5 +101,5 @@ document.addEventListener('DOMContentLoaded', () => {
         return directions[index];
     }
 
-    updateAnimation(); // Initialize animation on load
+    updateAnimation();
 });

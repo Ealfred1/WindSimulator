@@ -87,7 +87,7 @@ input[type=range] {
 }
 
 .control-group label {
-    color: #444;
+    color: #777;
 }
 
 label {
@@ -98,7 +98,12 @@ label {
 #treeType {
     padding: 10px 20px;
     border-radius: 10px;
-    border: 1px solid #0955f4;
+    border: 1px solid var(--green);
+    background: transparent;
+}
+
+.transparent {
+    background: transparent;
 }
 
 input[type="range"] {
