@@ -142,9 +142,16 @@ input[type="range"] {
 }
 
 .meter {
-    width: 100px;
-    height: 100px;
+    width: 120px;
+    height: 120px;
     position: relative;
+}
+
+.meter div {
+    position: absolute;
+    bottom: 50%;
+    top: 50%;
+    left: 50%;
 }
 
 .meter-bg {
