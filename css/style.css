@@ -59,6 +59,14 @@ input[type=range] {
     object-fit: cover;
 }
 
+#protectionOptions {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: column;
+}
+
 #house, #tree {
     position: absolute;
     bottom: 0;
@@ -113,15 +121,36 @@ input[type="range"] {
 .dashboard {
     display: flex;
     justify-content: space-around;
+    margin-top: 20px;
 }
 
 .dashboard-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     background-color: #333;
     color: #fff;
     padding: 10px;
     border-radius: 8px;
+    width: 150px;
+}
+
+.meter {
     width: 100px;
-    text-align: center;
+    height: 100px;
+    position: relative;
+}
+
+.meter-bg {
+    fill: none;
+    stroke: #fff;
+    stroke-width: 2;
+}
+
+.meter-hand {
+    stroke: #ff0000;
+    stroke-width: 3;
+    transform-origin: 50% 50%;
 }
 
 .hidden {

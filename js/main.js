@@ -12,6 +12,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const frontalAreaDensitySlider = document.getElementById('frontalAreaDensity');
     const frontalAreaDensityValue = document.getElementById('frontalAreaDensityValue');
 
+    const windSpeedHand = document.getElementById('windSpeedHand');
+    const windDirectionHand = document.getElementById('windDirectionHand');
+    const precipitationHand = document.getElementById('precipitationHand');
+
     const house = document.getElementById('house');
     const tree = document.getElementById('tree');
 
@@ -30,18 +34,21 @@ document.addEventListener('DOMContentLoaded', () => {
         windSpeedValue.textContent = windSpeedSlider.value;
         windSpeedDisplay.textContent = `${windSpeedSlider.value} mph`;
         updateAnimation();
+        updateMeter(windSpeedSlider.value, 'windSpeed');
     });
 
     windDirectionSlider.addEventListener('input', () => {
         windDirectionValue.textContent = windDirectionSlider.value;
         windDirectionDisplay.textContent = convertDirection(windDirectionSlider.value);
         updateAnimation();
+        updateMeter(windDirectionSlider.value, 'windDirection');
     });
 
     precipitationSlider.addEventListener('input', () => {
         precipitationValue.textContent = precipitationSlider.value;
         precipitationDisplay.textContent = `${precipitationSlider.value} in/h`;
         updateAnimation();
+        updateMeter(precipitationSlider.value, 'precipitation');
     });
 
     frontalAreaDensitySlider.addEventListener('input', () => {
@@ -93,6 +100,31 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             document.getElementById('protectionOptions').classList.add('hidden');
         }
+    }
+
+    function updateMeter(value, type) {
+        let hand;
+        let factor;
+        switch (type) {
+            case 'windSpeed':
+                hand = windSpeedHand;
+                factor = 1.5; // Example factor for wind speed
+                break;
+            case 'windDirection':
+                hand = windDirectionHand;
+                factor = 1; // Wind direction is direct rotation
+                break;
+            case 'precipitation':
+                hand = precipitationHand;
+                factor = 3.6; // Example factor for precipitation
+                break;
+        }
+        gsap.to(hand, {
+            rotation: value * factor,
+            transformOrigin: '50% 50%',
+            duration: 1,
+            ease: 'power1.inOut'
+        });
     }
 
     function convertDirection(degree) {
