@@ -97,8 +97,10 @@ document.addEventListener('DOMContentLoaded', () => {
         // Display popup for protection options if wind speed is high...
         if (windSpeed >= 75) {
             document.getElementById('protectionOptions').classList.remove('hidden');
+            document.getElementById('protectionOptions').classList.add('show');
         } else {
             document.getElementById('protectionOptions').classList.add('hidden');
+            document.getElementById('protectionOptions').classList.remove('show');
         }
     }
 

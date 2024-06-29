@@ -61,10 +61,16 @@ input[type=range] {
 
 #protectionOptions {
     width: 100%;
-    display: flex;
     justify-content: space-between;
     align-items: center;
     flex-direction: column;
+}
+
+button {
+    background: transparent;
+    border: 1px solid var(--green);
+    padding: 10px 20px;
+    border-radius: 3px;
 }
 
 #house, #tree {
@@ -148,11 +154,15 @@ input[type="range"] {
 }
 
 .meter-hand {
-    stroke: #ff0000;
+    stroke: #05ee52;
     stroke-width: 3;
     transform-origin: 50% 50%;
 }
 
 .hidden {
     display: none;
+}
+
+.show {
+    display: flex;
 }
