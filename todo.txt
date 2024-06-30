@@ -2,3 +2,438 @@ animated pine, oak and palm tree
 svg manipulations
 shaking of trees when the wind speed is more than 4
 adding the prunning options to refduce the movements after installtion
+
+
+Lets animate this svg to shake like a real-tree when its affected by wind according to the wind value set
+js code
+document.addEventListener('DOMContentLoaded', () => {
+    const treeTypeSelect = document.getElementById('treeType');
+    const windSpeedSlider = document.getElementById('windSpeed');
+    const windSpeedValue = document.getElementById('windSpeedValue');
+    const windSpeedDisplay = document.getElementById('windSpeedDisplay');
+    const windDirectionSlider = document.getElementById('windDirection');
+    const windDirectionValue = document.getElementById('windDirectionValue');
+    const windDirectionDisplay = document.getElementById('windDirectionDisplay');
+    const precipitationSlider = document.getElementById('precipitation');
+    const precipitationValue = document.getElementById('precipitationValue');
+    const precipitationDisplay = document.getElementById('precipitationDisplay');
+    const frontalAreaDensitySlider = document.getElementById('frontalAreaDensity');
+    const frontalAreaDensityValue = document.getElementById('frontalAreaDensityValue');
+
+    const windSpeedHand = document.getElementById('windSpeedHand');
+    const windDirectionHand = document.getElementById('windDirectionHand');
+    const precipitationHand = document.getElementById('precipitationHand');
+
+    const house = document.getElementById('house');
+    const tree = document.getElementById('tree');
+
+    // Constants
+    const constants = {
+        momentumAbsorption: {
+            oak: 1,
+            pine: 0.8,
+            palm: 0.5
+        },
+        airDensity: 1
+    };
+
+    // The code for updating the sliders value
+    windSpeedSlider.addEventListener('input', () => {
+        windSpeedValue.textContent = windSpeedSlider.value;
+        windSpeedDisplay.textContent = ${windSpeedSlider.value} mph;
+        updateAnimation();
+        updateMeter(windSpeedSlider.value, 'windSpeed');
+    });
+
+    windDirectionSlider.addEventListener('input', () => {
+        windDirectionValue.textContent = windDirectionSlider.value;
+        windDirectionDisplay.textContent = convertDirection(windDirectionSlider.value);
+        updateAnimation();
+        updateMeter(windDirectionSlider.value, 'windDirection');
+    });
+
+    precipitationSlider.addEventListener('input', () => {
+        precipitationValue.textContent = precipitationSlider.value;
+        precipitationDisplay.textContent = ${precipitationSlider.value} in/h;
+        updateAnimation();
+        updateMeter(precipitationSlider.value, 'precipitation');
+    });
+
+    frontalAreaDensitySlider.addEventListener('input', () => {
+        frontalAreaDensityValue.textContent = ${frontalAreaDensitySlider.value}%;
+        updateAnimation();
+    });
+
+    treeTypeSelect.addEventListener('change', () => {
+        updateAnimation();
+    });
+
+    function updateAnimation() {
+        const treeType = treeTypeSelect.value;
+        const windSpeed = windSpeedSlider.value;
+        const windDirection = windDirectionSlider.value;
+        const frontalAreaDensity = frontalAreaDensitySlider.value;
+
+        // Set tree image based on type but no images or svgs for now
+        if (treeType === 'oak') {
+            tree.src = 'path-to-oak-image.png';
+        } else if (treeType === 'pine') {
+            tree.src = 'path-to-pine-image.png';
+        } else {
+            tree.src = 'path-to-palm-image.png';
+        }
+
+        // Calculate momentum absorption used gpt for this tho
+        const momentumAbsorption = constants.momentumAbsorption[treeType];
+        const momentum = windSpeed * constants.airDensity * frontalAreaDensity / 100 * momentumAbsorption;
+
+        // Example GSAP animation
+        gsap.to(tree, {
+            rotation: windSpeed / 2,
+            x: windSpeed * 2,
+            duration: 1,
+            ease: 'power1.inOut'
+        });
+
+        gsap.to(house, {
+            rotation: windSpeed / 4,
+            x: windSpeed,
+            duration: 1,
+            ease: 'power1.inOut'
+        });
+
+        // Display popup for protection options if wind speed is high...
+        if (windSpeed >= 75) {
+            document.getElementById('protectionOptions').classList.remove('hidden');
+            document.getElementById('protectionOptions').classList.add('show');
+        } else {
+            document.getElementById('protectionOptions').classList.add('hidden');
+            document.getElementById('protectionOptions').classList.remove('show');
+        }
+    }
+
+    function updateMeter(value, type) {
+        let hand;
+        let factor;
+        switch (type) {
+            case 'windSpeed':
+                hand = windSpeedHand;
+                factor = 1.5; // Example factor for wind speed
+                break;
+            case 'windDirection':
+                hand = windDirectionHand;
+                factor = 1; // Wind direction is direct rotation
+                break;
+            case 'precipitation':
+                hand = precipitationHand;
+                factor = 3.6; // Example factor for precipitation
+                break;
+        }
+        gsap.to(hand, {
+            rotation: value * factor,
+            transformOrigin: '50% 50%',
+            duration: 1,
+            ease: 'power1.inOut'
+        });
+    }
+
+    function convertDirection(degree) {
+        const directions = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'];
+        const index = Math.floor((degree + 22.5) / 45) % 8;
+        return directions[index];
+    }
+
+    updateAnimation();
+});
+html code
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wind Impact Simulation</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.10.4/gsap.min.js"></script>
+</head>
+<body class="">
+    <div class="container overflow-x-hidden">
+        <div class="animation-container">
+            <img id="landscape" src="static/landscape.jpeg" alt="Landscape">
+            <img id="tree" src="path-to-oak-image.png" alt="Tree">
+            <img id="house" src="house.png" alt="House">
+        </div>
+        <div class="controls flex-col md:flex-row">
+            <div class="controls">
+                <div class="control-group">
+                <label for="treeType">Tree Type:</label>
+                <select id="treeType">
+                    <option value="oak">Oak</option>
+                    <option value="pine">Pine</option>
+                    <option value="palm">Palm</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <label for="windSpeed">Wind Speed (km/h):</label>
+                <input type="range" id="windSpeed" min="0" max="120" value="0">
+                <span id="windSpeedValue">0</span>
+            </div>    
+            </div>
+            <div class="controls">
+                <div class="control-group">
+                <label for="windDirection">Wind Direction:</label>
+                <input type="range" id="windDirection" min="0" max="360" value="0">
+                <span id="windDirectionValue">0</span>
+            </div>
+            <div class="control-group">
+                <label for="precipitation">Precipitation:</label>
+                <input type="range" id="precipitation" min="0" max="100" value="0">
+                <span id="precipitationValue">0</span>
+            </div>
+
+            </div>
+            <div class="controls">
+                <div class="control-group">
+                <label for="frontalAreaDensity">Frontal Area Density:</label>
+                <input type="range" id="frontalAreaDensity" min="0" max="100" value="80">
+                <span id="frontalAreaDensityValue">80%</span>
+            </div>    
+            </div>
+            
+        </div>
+        <div id="protectionOptions" class="hidden mb-8">
+            <div class="">
+                <h2>Tree Protection Options</h2>    
+            </div>
+            <div class="space-x-3 space-y-3">
+                <button id="pruning">Tree trimming/pruning</button>
+                <button id="copperWire">Installing copper wire</button>
+                <button id="mulching">Creating a ring of tree leaves/sticks</button>
+                <button id="magnifyingGlass">Using a magnifying glass</button>
+            </div>
+        </div>
+         <div class="md:dashboard flex flex-wrap justify-center items-center gap-5 md:justify-around md:gap-x-16">
+            <div class="dashboard-item">
+                <span>WIND SPEED</span>
+                <div class="meter">
+                    <svg viewBox="0 0 100 100">
+                        <circle cx="50" cy="50" r="45" class="meter-bg" />
+                        <line x1="50" y1="50" x2="50" y2="10" id="windSpeedHand" class="meter-hand" />
+                        <circle cx="50" cy="50" r="2" fill="#05ee52" />
+                    </svg>
+                    <div id="windSpeedDisplay">0 mph</div>
+                </div>
+            </div>
+            <div class="dashboard-item">
+                <span>WIND DIRECTION</span>
+                <div class="meter">
+                    <svg viewBox="0 0 100 100">
+                        <circle cx="50" cy="50" r="45" class="meter-bg" />
+                        <line x1="50" y1="50" x2="50" y2="10" id="windDirectionHand" class="meter-hand" />
+                        <circle cx="50" cy="50" r="2" fill="#ff0000" />
+                    </svg>
+                    <div id="windDirectionDisplay">N</div>
+                </div>
+            </div>
+            <div class="dashboard-item">
+                <span>PRECIPITATION</span>
+                <div class="meter">
+                    <svg viewBox="0 0 100 100">
+                        <circle cx="50" cy="50" r="45" class="meter-bg" />
+                        <line x1="50" y1="50" x2="50" y2="10" id="precipitationHand" class="meter-hand" />
+                        <circle cx="50" cy="50" r="2" fill="#ff0000" />
+                    </svg>
+                    <div id="precipitationDisplay">0 in/h</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="js/main.js"></script>
+</body>
+</html>
+
+css code
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
+
+* {
+
+    margin: 0;
+    outline: none;
+    border: none;
+    padding: 0;
+    box-sizing: border-box;
+    color: white;
+    font-family: "Poppins", sans-serif;
+}
+
+:root {
+  --black: rgba(0, 0, 0, 0.92);
+  --green: #05ee52;
+}
+
+body {
+    background: #000010;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    min-height: 100vh;
+    font-size: 82.5%;
+}
+
+.container {
+    width: 100%;
+    text-align: center;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    transform: scale(0.912);
+    background: rgba(59, 59, 59, 0.25);
+    height: 100%;
+}
+
+input[type=range] {
+  width: 100%;
+  accent-color: var(--green);
+  border: none;
+  outline: none;
+}
+
+.animation-container {
+    position: relative;
+    width: 100%;
+    height: 400px;
+    margin-bottom: 20px;
+    background-color: #e0e0e0;
+    overflow: hidden;
+    border-radius: 10px;
+}
+
+#landscape {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+#protectionOptions {
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: column;
+}
+
+button {
+    background: transparent;
+    border: 1px solid var(--green);
+    padding: 10px 20px;
+    border-radius: 3px;
+}
+
+#house, #tree {
+    position: absolute;
+    bottom: 0;
+}
+
+#house {
+    left: 10%;
+    width: 100px;
+}
+
+#tree {
+    right: 10%;
+    width: 100px;
+}
+
+.controls {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    @apply md:gap-x-[100px];
+}
+
+.control-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.control-group label {
+    color: #777;
+}
+
+label {
+    margin-bottom: 5px;
+}
+
+
+#treeType {
+    padding: 10px 20px;
+    border-radius: 10px;
+    border: 1px solid var(--green);
+    background: transparent;
+}
+
+.transparent {
+    background: transparent;
+}
+
+input[type="range"] {
+    width: 150px;
+}
+
+.dashboard {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 20px;
+}
+
+.dashboard-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #333;
+    color: #fff;
+    padding: 10px;
+    border-radius: 8px;
+    width: 150px;
+}
+
+.meter {
+    width: 120px;
+    height: 120px;
+    position: relative;
+}
+
+.meter div {
+    position: absolute;
+    bottom: 50%;
+    top: 50%;
+    left: 50%;
+}
+
+.meter-bg {
+    fill: none;
+    stroke: #fff;
+    stroke-width: 2;
+}
+
+.meter-hand {
+    stroke: #05ee52;
+    stroke-width: 3;
+    transform-origin: 50% 50%;
+}
+
+.hidden {
+    display: none;
+}
+
+.show {
+    display: flex;
+}
+
+
+and lets finish up with all the functionalities in this project using this svg as the three trees for now and then later we can add more svgs
+Even add the protection popup and all the button clikced will reduce the effect and also all other functionalityies in the project doc i gave earlier

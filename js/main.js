@@ -66,74 +66,70 @@ document.addEventListener('DOMContentLoaded', () => {
         const windDirection = windDirectionSlider.value;
         const frontalAreaDensity = frontalAreaDensitySlider.value;
 
-        // Set tree image based on type but no images or svgs for now
-        if (treeType === 'oak') {
-            tree.src = 'path-to-oak-image.png';
-        } else if (treeType === 'pine') {
-            tree.src = 'path-to-pine-image.png';
-        } else {
-            tree.src = 'path-to-palm-image.png';
-        }
-
-        // Calculate momentum absorption used gpt for this tho
+        // Calculate momentum absorption
         const momentumAbsorption = constants.momentumAbsorption[treeType];
         const momentum = windSpeed * constants.airDensity * frontalAreaDensity / 100 * momentumAbsorption;
 
-        // Example GSAP animation
-        gsap.to(tree, {
-            rotation: windSpeed / 2,
-            x: windSpeed * 2,
+        // Calculate sway values
+        const swayAngle = windSpeed / 10;
+        const swayX = Math.cos(windDirection * Math.PI / 180) * windSpeed / 2;
+        const swayY = Math.sin(windDirection * Math.PI / 180) * windSpeed / 2;
+
+        // Get individual parts of the tree
+        const leaves = document.querySelectorAll('#tree .leaves');
+        const branches = document.querySelectorAll('#tree .branches');
+        const trunk = document.querySelector('#tree .trunk');
+
+        // Animate leaves
+        gsap.to(leaves, {
+            rotation: swayAngle * 1.5,
+            x: swayX * 1.5,
+            y: swayY * 1.5,
             duration: 1,
-            ease: 'power1.inOut'
+            ease: 'power1.inOut',
+            yoyo: true,
+            repeat: -1
         });
 
-        gsap.to(house, {
-            rotation: windSpeed / 4,
-            x: windSpeed,
-            duration: 1,
-            ease: 'power1.inOut'
+        // Animate branches
+        gsap.to(branches, {
+            rotation: swayAngle,
+            x: swayX,
+            y: swayY,
+            duration: 1.5,
+            ease: 'power1.inOut',
+            yoyo: true,
+            repeat: -1
         });
 
-        // Display popup for protection options if wind speed is high...
-        if (windSpeed >= 75) {
-            document.getElementById('protectionOptions').classList.remove('hidden');
-            document.getElementById('protectionOptions').classList.add('show');
-        } else {
-            document.getElementById('protectionOptions').classList.add('hidden');
-            document.getElementById('protectionOptions').classList.remove('show');
-        }
+        // Animate trunk
+        gsap.to(trunk, {
+            rotation: swayAngle / 2,
+            x: swayX / 2,
+            y: swayY / 2,
+            duration: 2,
+            ease: 'power1.inOut',
+            yoyo: true,
+            repeat: -1
+        });
     }
 
     function updateMeter(value, type) {
-        let hand;
-        let factor;
-        switch (type) {
-            case 'windSpeed':
-                hand = windSpeedHand;
-                factor = 1.5; // Example factor for wind speed
-                break;
-            case 'windDirection':
-                hand = windDirectionHand;
-                factor = 1; // Wind direction is direct rotation
-                break;
-            case 'precipitation':
-                hand = precipitationHand;
-                factor = 3.6; // Example factor for precipitation
-                break;
+        let angle = (value / 100) * 180;
+        if (type === 'windSpeed') {
+            windSpeedHand.setAttribute('transform', `rotate(${angle}, 50, 50)`);
+        } else if (type === 'windDirection') {
+            windDirectionHand.setAttribute('transform', `rotate(${angle}, 50, 50)`);
+        } else if (type === 'precipitation') {
+            precipitationHand.setAttribute('transform', `rotate(${angle}, 50, 50)`);
         }
-        gsap.to(hand, {
-            rotation: value * factor,
-            transformOrigin: '50% 50%',
-            duration: 1,
-            ease: 'power1.inOut'
-        });
     }
 
-    function convertDirection(degree) {
-        const directions = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'];
-        const index = Math.floor((degree + 22.5) / 45) % 8;
+    function convertDirection(value) {
+        const directions = ['N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE', 'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW'];
+        const index = Math.round(value / 22.5) % 16;
         return directions[index];
     }
 
-    updateAnimation();
+    updateAnimation(); // Initial call to set the animation
 });
