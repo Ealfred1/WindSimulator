@@ -1,0 +1,4 @@
+animated pine, oak and palm tree
+svg manipulations
+shaking of trees when the wind speed is more than 4
+adding the prunning options to refduce the movements after installtion
