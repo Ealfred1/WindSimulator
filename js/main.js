@@ -19,6 +19,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const house = document.getElementById('house');
     const tree = document.getElementById('tree');
 
+     // Protection buttons
+    const pruningButton = document.getElementById('pruning');
+    const copperWireButton = document.getElementById('copperWire');
+    const mulchingButton = document.getElementById('mulching');
+    const magnifyingGlassButton = document.getElementById('magnifyingGlass');
+
+
     // Constants
     const constants = {
         momentumAbsorption: {
@@ -65,6 +72,16 @@ document.addEventListener('DOMContentLoaded', () => {
         const windSpeed = windSpeedSlider.value;
         const windDirection = windDirectionSlider.value;
         const frontalAreaDensity = frontalAreaDensitySlider.value;
+
+
+        // Display popup for protection options if wind speed is high...
+        if (windSpeed >= 75) {
+            document.getElementById('protectionOptions').classList.remove('hidden');
+            document.getElementById('protectionOptions').classList.add('show');
+        } else {
+            document.getElementById('protectionOptions').classList.add('hidden');
+            document.getElementById('protectionOptions').classList.remove('show');
+        }
 
         // Calculate momentum absorption
         const momentumAbsorption = constants.momentumAbsorption[treeType];
@@ -130,6 +147,33 @@ document.addEventListener('DOMContentLoaded', () => {
         const index = Math.round(value / 22.5) % 16;
         return directions[index];
     }
+
+    /// Function to apply protection measures
+    function applyProtection(button, reductionPercentage) {
+        const windSpeed = windSpeedSlider.value;
+        const reducedWindSpeed = windSpeed - (windSpeed * reductionPercentage / 100);
+        windSpeedSlider.value = reducedWindSpeed;
+        windSpeedValue.textContent = reducedWindSpeed;
+        windSpeedDisplay.textContent = `${reducedWindSpeed} mph`;
+        updateAnimation();
+
+        // Toggle active class
+        const buttons = [pruningButton, copperWireButton, mulchingButton, magnifyingGlassButton];
+        buttons.forEach(btn => {
+            if (btn === button) {
+                btn.classList.add('bg-green-500');
+            } else {
+                btn.classList.remove('bg-green-500');
+            }
+        });
+    }
+
+    // Add event listeners to protection buttons
+    pruningButton.addEventListener('click', () => applyProtection(pruningButton, 10));
+    copperWireButton.addEventListener('click', () => applyProtection(copperWireButton, 15));
+    mulchingButton.addEventListener('click', () => applyProtection(mulchingButton, 5));
+    magnifyingGlassButton.addEventListener('click', () => applyProtection(magnifyingGlassButton, 20));
+
 
     updateAnimation(); // Initial call to set the animation
 });

@@ -1,11 +1,4 @@
-animated pine, oak and palm tree
-svg manipulations
-shaking of trees when the wind speed is more than 4
-adding the prunning options to refduce the movements after installtion
 
-
-Lets animate this svg to shake like a real-tree when its affected by wind according to the wind value set
-js code
 document.addEventListener('DOMContentLoaded', () => {
     const treeTypeSelect = document.getElementById('treeType');
     const windSpeedSlider = document.getElementById('windSpeed');
@@ -74,78 +67,78 @@ document.addEventListener('DOMContentLoaded', () => {
         const windDirection = windDirectionSlider.value;
         const frontalAreaDensity = frontalAreaDensitySlider.value;
 
-        // Set tree image based on type but no images or svgs for now
-        if (treeType === 'oak') {
-            tree.src = 'path-to-oak-image.png';
-        } else if (treeType === 'pine') {
-            tree.src = 'path-to-pine-image.png';
-        } else {
-            tree.src = 'path-to-palm-image.png';
-        }
-
-        // Calculate momentum absorption used gpt for this tho
+        // Calculate momentum absorption
         const momentumAbsorption = constants.momentumAbsorption[treeType];
         const momentum = windSpeed * constants.airDensity * frontalAreaDensity / 100 * momentumAbsorption;
 
-        // Example GSAP animation
-        gsap.to(tree, {
-            rotation: windSpeed / 2,
-            x: windSpeed * 2,
+        // Calculate sway values
+        const swayAngle = windSpeed / 10;
+        const swayX = Math.cos(windDirection * Math.PI / 180) * windSpeed / 2;
+        const swayY = Math.sin(windDirection * Math.PI / 180) * windSpeed / 2;
+
+        // Get individual parts of the tree
+        const leaves = document.querySelectorAll('#tree .leaves');
+        const branches = document.querySelectorAll('#tree .branches');
+        const trunk = document.querySelector('#tree .trunk');
+
+        // Animate leaves
+        gsap.to(leaves, {
+            rotation: swayAngle * 1.5,
+            x: swayX * 1.5,
+            y: swayY * 1.5,
             duration: 1,
-            ease: 'power1.inOut'
+            ease: 'power1.inOut',
+            yoyo: true,
+            repeat: -1
         });
 
-        gsap.to(house, {
-            rotation: windSpeed / 4,
-            x: windSpeed,
-            duration: 1,
-            ease: 'power1.inOut'
+        // Animate branches
+        gsap.to(branches, {
+            rotation: swayAngle,
+            x: swayX,
+            y: swayY,
+            duration: 1.5,
+            ease: 'power1.inOut',
+            yoyo: true,
+            repeat: -1
         });
 
-        // Display popup for protection options if wind speed is high...
-        if (windSpeed >= 75) {
-            document.getElementById('protectionOptions').classList.remove('hidden');
-            document.getElementById('protectionOptions').classList.add('show');
-        } else {
-            document.getElementById('protectionOptions').classList.add('hidden');
-            document.getElementById('protectionOptions').classList.remove('show');
-        }
+        // Animate trunk
+        gsap.to(trunk, {
+            rotation: swayAngle / 2,
+            x: swayX / 2,
+            y: swayY / 2,
+            duration: 2,
+            ease: 'power1.inOut',
+            yoyo: true,
+            repeat: -1
+        });
     }
 
     function updateMeter(value, type) {
-        let hand;
-        let factor;
-        switch (type) {
-            case 'windSpeed':
-                hand = windSpeedHand;
-                factor = 1.5; // Example factor for wind speed
-                break;
-            case 'windDirection':
-                hand = windDirectionHand;
-                factor = 1; // Wind direction is direct rotation
-                break;
-            case 'precipitation':
-                hand = precipitationHand;
-                factor = 3.6; // Example factor for precipitation
-                break;
+        let angle = (value / 100) * 180;
+        if (type === 'windSpeed') {
+            windSpeedHand.setAttribute('transform', rotate(${angle}, 50, 50));
+        } else if (type === 'windDirection') {
+            windDirectionHand.setAttribute('transform', rotate(${angle}, 50, 50));
+        } else if (type === 'precipitation') {
+            precipitationHand.setAttribute('transform', rotate(${angle}, 50, 50));
         }
-        gsap.to(hand, {
-            rotation: value * factor,
-            transformOrigin: '50% 50%',
-            duration: 1,
-            ease: 'power1.inOut'
-        });
     }
 
-    function convertDirection(degree) {
-        const directions = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'];
-        const index = Math.floor((degree + 22.5) / 45) % 8;
+    function convertDirection(value) {
+        const directions = ['N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE', 'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW'];
+        const index = Math.round(value / 22.5) % 16;
         return directions[index];
     }
 
-    updateAnimation();
+    updateAnimation(); // Initial call to set the animation
 });
-html code
+The code provided doesnt swing the trees (sway them, i want the swaing to be more realistic and more 3D)
+Now i also want thr protection stuufs to be done acording to the project docs
+
+
+also suggest me a good 3D option that will fit this project using vanilla js so as to make the lansacape i used 3d as well as the trees
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -158,8 +151,18 @@ html code
 <body class="">
     <div class="container overflow-x-hidden">
         <div class="animation-container">
-            <img id="landscape" src="static/landscape.jpeg" alt="Landscape">
-            <img id="tree" src="path-to-oak-image.png" alt="Tree">
+            <img id="landscape" src="static/land.jpeg" alt="Landscape">
+            <!-- Embedded SVG content -->
+            <div id="tree-container">
+                <!-- Add SVG content here from pine.svg -->
+                <svg id="tree" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+                    <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+     viewBox="0 0 426.707 308.287" style="enable-background:new 0 0 426.707 308.287;" xml:space="preserve">
+
+</svg>
+
+                </svg>
+            </div>
             <img id="house" src="house.png" alt="House">
         </div>
         <div class="controls flex-col md:flex-row">
@@ -250,190 +253,3 @@ html code
     <script src="js/main.js"></script>
 </body>
 </html>
-
-css code
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
-
-* {
-
-    margin: 0;
-    outline: none;
-    border: none;
-    padding: 0;
-    box-sizing: border-box;
-    color: white;
-    font-family: "Poppins", sans-serif;
-}
-
-:root {
-  --black: rgba(0, 0, 0, 0.92);
-  --green: #05ee52;
-}
-
-body {
-    background: #000010;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    min-height: 100vh;
-    font-size: 82.5%;
-}
-
-.container {
-    width: 100%;
-    text-align: center;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    transform: scale(0.912);
-    background: rgba(59, 59, 59, 0.25);
-    height: 100%;
-}
-
-input[type=range] {
-  width: 100%;
-  accent-color: var(--green);
-  border: none;
-  outline: none;
-}
-
-.animation-container {
-    position: relative;
-    width: 100%;
-    height: 400px;
-    margin-bottom: 20px;
-    background-color: #e0e0e0;
-    overflow: hidden;
-    border-radius: 10px;
-}
-
-#landscape {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-#protectionOptions {
-    width: 100%;
-    justify-content: space-between;
-    align-items: center;
-    flex-direction: column;
-}
-
-button {
-    background: transparent;
-    border: 1px solid var(--green);
-    padding: 10px 20px;
-    border-radius: 3px;
-}
-
-#house, #tree {
-    position: absolute;
-    bottom: 0;
-}
-
-#house {
-    left: 10%;
-    width: 100px;
-}
-
-#tree {
-    right: 10%;
-    width: 100px;
-}
-
-.controls {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 20px;
-    @apply md:gap-x-[100px];
-}
-
-.control-group {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.control-group label {
-    color: #777;
-}
-
-label {
-    margin-bottom: 5px;
-}
-
-
-#treeType {
-    padding: 10px 20px;
-    border-radius: 10px;
-    border: 1px solid var(--green);
-    background: transparent;
-}
-
-.transparent {
-    background: transparent;
-}
-
-input[type="range"] {
-    width: 150px;
-}
-
-.dashboard {
-    display: flex;
-    justify-content: space-around;
-    margin-top: 20px;
-}
-
-.dashboard-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background-color: #333;
-    color: #fff;
-    padding: 10px;
-    border-radius: 8px;
-    width: 150px;
-}
-
-.meter {
-    width: 120px;
-    height: 120px;
-    position: relative;
-}
-
-.meter div {
-    position: absolute;
-    bottom: 50%;
-    top: 50%;
-    left: 50%;
-}
-
-.meter-bg {
-    fill: none;
-    stroke: #fff;
-    stroke-width: 2;
-}
-
-.meter-hand {
-    stroke: #05ee52;
-    stroke-width: 3;
-    transform-origin: 50% 50%;
-}
-
-.hidden {
-    display: none;
-}
-
-.show {
-    display: flex;
-}
-
-
-and lets finish up with all the functionalities in this project using this svg as the three trees for now and then later we can add more svgs
-Even add the protection popup and all the button clikced will reduce the effect and also all other functionalityies in the project doc i gave earlier

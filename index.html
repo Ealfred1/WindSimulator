@@ -6,15 +6,17 @@
     <title>Wind Impact Simulation</title>
     <link rel="stylesheet" href="css/style.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.10.4/gsap.min.js"></script>
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.10.4/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 </head>
 <body class="">
     <div class="container overflow-x-hidden">
         <div class="animation-container">
-            <img id="landscape" src="static/landscape.jpeg" alt="Landscape">
+            <img id="landscape" src="static/land.jpeg" alt="Landscape">
             <!-- Embedded SVG content -->
             <div id="tree-container">
                 <!-- Add SVG content here from pine.svg -->
-                <svg id="tree" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+                <svg id="tree" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" class="w-screen">
                     <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
      viewBox="0 0 426.707 308.287" style="enable-background:new 0 0 426.707 308.287;" xml:space="preserve">
 <g>
@@ -1491,7 +1493,7 @@
 </g>
 </svg>
 
-                </svg>
+</svg>
             </div>
             <img id="house" src="house.png" alt="House">
         </div>
