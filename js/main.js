@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const treeSVGs = {
         pine: 'static/pine.svg',
         oak: 'static/oak.svg',
-        palm: 'static/pine.svg'
+        palm: 'static/palm.svg'
     };
 
     // Load initial tree

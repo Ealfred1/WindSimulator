@@ -79,14 +79,6 @@ button {
     border-radius: 3px;
 }
 
-#house {
-    position: absolute;
-    bottom: 0;
-    left: 10%;
-    width: 230px;
-    height: 230px;
-    transform: scale(2.9);
-}
 
 
 .controls {
