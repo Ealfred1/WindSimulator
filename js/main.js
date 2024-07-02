@@ -17,26 +17,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const precipitationHand = document.getElementById('precipitationHand');
 
     const house = document.getElementById('house');
-    const tree = document.getElementById('tree');
+    const treeContainer = document.getElementById('treeContainer');
 
-     // Protection buttons
-    const pruningButton = document.getElementById('pruning');
-    const copperWireButton = document.getElementById('copperWire');
-    const mulchingButton = document.getElementById('mulching');
-    const magnifyingGlassButton = document.getElementById('magnifyingGlass');
-
-
-    // Constants
-    const constants = {
-        momentumAbsorption: {
-            oak: 1,
-            pine: 0.8,
-            palm: 0.5
-        },
-        airDensity: 1
+    const treeSVGs = {
+        pine: 'static/pine.svg',
+        oak: 'static/oak.svg',
+        palm: 'static/pine.svg'
     };
 
-    // The code for updating the sliders value
+    // Load initial tree
+    loadTree(treeTypeSelect.value);
+
+    // Event listeners
     windSpeedSlider.addEventListener('input', () => {
         windSpeedValue.textContent = windSpeedSlider.value;
         windSpeedDisplay.textContent = `${windSpeedSlider.value} mph`;
@@ -64,15 +56,28 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     treeTypeSelect.addEventListener('change', () => {
+        loadTree(treeTypeSelect.value);
         updateAnimation();
     });
+
+    function loadTree(treeType) {
+        fetch(treeSVGs[treeType])
+            .then(response => response.text())
+            .then(svg => {
+                treeContainer.innerHTML = svg;
+                console.log(svg)
+                // Ensure the loaded SVG has manipulatable elements
+                const svgElement = treeContainer.querySelector('svg');
+                svgElement.setAttribute('width', '200');
+                svgElement.setAttribute('height', '200');
+            });
+    }
 
     function updateAnimation() {
         const treeType = treeTypeSelect.value;
         const windSpeed = windSpeedSlider.value;
         const windDirection = windDirectionSlider.value;
         const frontalAreaDensity = frontalAreaDensitySlider.value;
-
 
         // Display popup for protection options if wind speed is high...
         if (windSpeed >= 75) {
@@ -83,23 +88,19 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('protectionOptions').classList.remove('show');
         }
 
-        // Calculate momentum absorption
-        const momentumAbsorption = constants.momentumAbsorption[treeType];
-        const momentum = windSpeed * constants.airDensity * frontalAreaDensity / 100 * momentumAbsorption;
-
         // Calculate sway values
         const swayAngle = windSpeed / 10;
         const swayX = Math.cos(windDirection * Math.PI / 180) * windSpeed / 2;
         const swayY = Math.sin(windDirection * Math.PI / 180) * windSpeed / 2;
 
         // Get individual parts of the tree
-        const leaves = document.querySelectorAll('#tree .leaves');
-        const branches = document.querySelectorAll('#tree .branches');
-        const trunk = document.querySelector('#tree .trunk');
+        const leaves = document.querySelectorAll('#treeContainer svg .leaves');
+        const trunk = document.querySelector('#treeContainer svg .trunk');
 
         // Animate leaves
         gsap.to(leaves, {
-            rotation: swayAngle * 1.5,
+            rotation: swayAngle * 2,
+            skewX: swayAngle / 2,
             x: swayX * 1.5,
             y: swayY * 1.5,
             duration: 1,
@@ -108,20 +109,22 @@ document.addEventListener('DOMContentLoaded', () => {
             repeat: -1
         });
 
-        // Animate branches
-        gsap.to(branches, {
-            rotation: swayAngle,
-            x: swayX,
-            y: swayY,
-            duration: 1.5,
-            ease: 'power1.inOut',
-            yoyo: true,
-            repeat: -1
-        });
+        // // Animate branches
+        // gsap.to(branches, {
+        //     rotation: swayAngle,
+        //     skewX: swayAngle / 3,
+        //     x: swayX,
+        //     y: swayY,
+        //     duration: 1.5,
+        //     ease: 'power1.inOut',
+        //     yoyo: true,
+        //     repeat: -1
+        // });
 
         // Animate trunk
         gsap.to(trunk, {
             rotation: swayAngle / 2,
+            skewX: swayAngle / 4,
             x: swayX / 2,
             y: swayY / 2,
             duration: 2,
@@ -148,7 +151,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return directions[index];
     }
 
-    /// Function to apply protection measures
+    // Function to apply protection measures
     function applyProtection(button, reductionPercentage) {
         const windSpeed = windSpeedSlider.value;
         const reducedWindSpeed = windSpeed - (windSpeed * reductionPercentage / 100);
@@ -173,7 +176,6 @@ document.addEventListener('DOMContentLoaded', () => {
     copperWireButton.addEventListener('click', () => applyProtection(copperWireButton, 15));
     mulchingButton.addEventListener('click', () => applyProtection(mulchingButton, 5));
     magnifyingGlassButton.addEventListener('click', () => applyProtection(magnifyingGlassButton, 20));
-
 
     updateAnimation(); // Initial call to set the animation
 });

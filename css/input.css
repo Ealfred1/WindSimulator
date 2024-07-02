@@ -53,7 +53,8 @@ input[type=range] {
     width: 100%;
     height: 400px;
     margin-bottom: 20px;
-    background-color: #e0e0e0;
+    background: url('../static/land.jpeg') center no-repeat;
+    background-size: cover;
     overflow: hidden;
     border-radius: 10px;
 }
@@ -78,20 +79,15 @@ button {
     border-radius: 3px;
 }
 
-#house, #tree {
+#house {
     position: absolute;
     bottom: 0;
-}
-
-#house {
     left: 10%;
-    width: 100px;
+    width: 230px;
+    height: 230px;
+    transform: scale(2.9);
 }
 
-#tree {
-    right: 10%;
-    width: 100px;
-}
 
 .controls {
     display: flex;
@@ -178,4 +174,100 @@ input[type="range"] {
 
 .show {
     display: flex;
+}
+
+.leaves {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  perspective: 100rem;
+  z-index: 1;
+  transform: scale(0.5);
+}
+
+.leaves div {
+  position: absolute;
+  width: 3rem;
+  height: 5rem;
+  background-color: rgba(22, 179, 16, 0.67);
+  border-radius: 20rem 0;
+  overflow: hidden;
+}
+
+@keyframes leafAnim {
+  0% {
+    left: -10rem;
+    transform: rotateZ(0) translateZ(0);
+  }
+  100% {
+    left: 200rem;
+    transform: rotateZ(360deg) translateZ(-150rem);
+  }
+}
+
+.leaves div:nth-child(1) {
+  top: 5rem;
+  animation: leafAnim 10s infinite linear;
+}
+
+.leaves div:nth-child(2) {
+  top: 20rem;
+  animation: leafAnim 6s infinite linear;
+}
+
+.leaves div:nth-child(3) {
+  top: 35rem;
+  animation: leafAnim 4s infinite ease-in;
+}
+
+.leaves div:nth-child(4) {
+  top: 50rem;
+  animation: leafAnim 8s infinite linear;
+}
+
+.leaves div:nth-child(5) {
+  top: 65rem;
+  animation: leafAnim 3s infinite linear;
+}
+
+.leaves div:nth-child(6) {
+  top: 57rem;
+  animation: leafAnim 11s infinite linear;
+}
+
+.leaves div:nth-child(7) {
+  top: 57rem;
+  animation: leafAnim 12s infinite ease-in-out;
+}
+
+.leaves div:nth-child(8) {
+  top: 57rem;
+  animation: leafAnim 11s infinite linear;
+}
+
+.leaves div:nth-child(9) {
+  top: 57rem;
+  animation: leafAnim 12s infinite ease-in-out;
+}
+
+.leaves div:nth-child(10) {
+  top: 57rem;
+  animation: leafAnim 11s infinite linear;
+}
+
+.leaves div:nth-child(11) {
+  top: 57rem;
+  animation: leafAnim 12s infinite ease-in-out;
+}
+
+.leaves div::before {
+  content: "";
+  width: 0.1rem;
+  height: 120%;
+  background-color: rgb(112, 241, 86);
+  position: absolute;
+  bottom: 0;
+  transform: rotateZ(30deg);
+  transform-origin: bottom;
+  box-shadow: 0.1rem 0.1rem 0.5rem green;
 }
